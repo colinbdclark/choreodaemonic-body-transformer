@@ -1,0 +1,43 @@
+html {
+    background-color: black;
+    color: white;
+    font-family: sans-serif;
+    margin-left: 2.5%;
+    margin-top: 2%;
+}
+
+h1 {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    margin-top: 0;
+    font-size: 3rem;
+}
+
+table {
+    font-family: monospace;
+    font-size: 75%;
+    padding-top: 2rem;
+    table-layout: fixed;
+    width: 100%;
+}
+
+th {
+    font-weight: bold;
+}
+
+td {
+    width: 1/33%;
+}
+
+th {
+    background-color: #333;
+}
+
+tr:nth-child(odd) {
+    background-color: black;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: gray;
+}
