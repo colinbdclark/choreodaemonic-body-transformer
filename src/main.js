@@ -34,7 +34,6 @@ app.whenReady().then(() => {
     });
 
     udp.listener.on("message", (message) => {
-        console.log(message);
         mainWindow.webContents.send("osc-message", message);
     });
 });
