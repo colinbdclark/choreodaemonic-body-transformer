@@ -33,8 +33,8 @@ app.whenReady().then(() => {
         udp.sender.send(message, ip, port);
     });
 
-    udp.listener.on("message", (message) => {
-        mainWindow.webContents.send("osc-message", message);
+    udp.listener.on("bundle", (message) => {
+        mainWindow.webContents.send("osc-bundle", message);
     });
 });
 
