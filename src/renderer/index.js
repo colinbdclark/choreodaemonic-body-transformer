@@ -1,26 +1,27 @@
-let x = [], y = [], z = [];
+import { KeypointCanvas } from "./keypoint-canvas.js";
+import { KeypointTable } from "./keypoint-table.js";
 
-function cellForValue(oscArg) {
-    let value = oscArg.value;
-    let valueString = isNaN(value) ? "----" : value.toFixed(2);
-    return "<td>" + valueString + "</td>"
-}
+let keypointCanvas = new KeypointCanvas(document.getElementById("poseCanvas"));
+let keypointTable = new KeypointTable()
 
 osc.onBundle((event, bundle) => {
     // Only read the first pose.
     let poseMessage = bundle.packets[0];
-    let xChildren = "";
-    let yChildren = "";
-    let zChildren = "";
+    let keypoints = [];
 
     for (let i = 0; i < poseMessage.args.length; i++) {
         let keypoint = poseMessage.args[i];
-        xChildren += cellForValue(keypoint[0]);
-        yChildren += cellForValue(keypoint[1]);
-        zChildren += cellForValue(keypoint[2])
+
+        keypoints.push({
+            id: i,
+            x: keypoint[0].value,
+            y: keypoint[1].value,
+            z: keypoint[2].value
+        });
     }
 
-    document.getElementById("x").innerHTML = xChildren;
-    document.getElementById("y").innerHTML = yChildren;
-    document.getElementById("z").innerHTML = zChildren;
+    // TODO: Reduce cost of multiple loops by transforming
+    // and rendering each keypoint within a single loop.
+    keypointCanvas.render(keypoints);
+    keypointTable.render(keypoints);
 });
