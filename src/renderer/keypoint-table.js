@@ -1,8 +1,20 @@
 export class KeypointTable {
-    constructor() {
+    constructor(keypointNames) {
         this.xRow = document.getElementById("x");
         this.yRow = document.getElementById("y");
         this.zRow = document.getElementById("z");
+        this.renderHeader(keypointNames);
+    }
+
+    renderHeader(keypointNames) {
+        let headerRow = document.querySelector("thead tr");
+        let headerCellsString = "";
+
+        keypointNames.forEach((keypointName) => {
+            headerCellsString += `<th>${keypointName}</th>`
+        });
+
+        headerRow.innerHTML = headerCellsString;
     }
 
     cellForValue(value) {
