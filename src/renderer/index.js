@@ -1,6 +1,9 @@
 import { KeypointCanvas } from "./keypoint-canvas.js";
 import { KeypointTable } from "./keypoint-table.js";
 import { KeypointSynthesizer } from "./keypoint-synthesizer.js";
+import { History } from "./keypoint-history.js";
+import { RobotpointSelector } from "./robotpoint-selector.js";
+
 
 const KEYPOINT_NAMES = [
     "nose",
@@ -40,9 +43,24 @@ const KEYPOINT_NAMES = [
     "pelvis"
 ];
 
+//plan from Sunday, March 16th 
+// let selectedKeypoints = []; // names or ids of selected keypoints
+// let selectedBody = []; // array of selected keypoints and their x, y values and drop selectedKeypoint if NaN 
+// let history = []; // array of selectedBody 
+
 let keypointCanvas = new KeypointCanvas(document.getElementById("poseCanvas"));
 let keypointTable = new KeypointTable(KEYPOINT_NAMES);
 let synthesizer = new KeypointSynthesizer();
+
+let history = new History();
+let robotpointSelector = new RobotpointSelector(KEYPOINT_NAMES);
+
+let isSelected = false;
+
+document.getElementById("selectedCheck").addEventListener("change", (event) => {
+    isSelected = event.target.checked;
+});
+
 
 osc.onBundle((event, bundle) => {
     // Only read the first pose.
@@ -62,9 +80,25 @@ osc.onBundle((event, bundle) => {
 
     let synthesizedKeypoints = synthesizer.synthesizeKeypoints(keypoints);
     keypoints.push(...synthesizedKeypoints);
-
-    // TODO: Reduce cost of multiple loops by transforming
-    // and rendering each keypoint within a single loop.
-    keypointCanvas.render(keypoints);
+    
+    // always show all keypoints in table (state of the world)
     keypointTable.render(keypoints);
+
+    // if we have checked the box to do the selected Robot points, render only those in canvas and history
+    // otherwise render all keypoints 
+    if(isSelected){
+        // Get selected Robot points
+        let selectedRobotpoints = robotpointSelector.getSelectedKeypoints(keypoints);
+
+        keypointCanvas.render(selectedRobotpoints);
+        history.addKeypoints(selectedRobotpoints);
+    }
+    else{
+        // TODO: Reduce cost of multiple loops by transforming
+        // and rendering each keypoint within a single loop.
+        // Edit: when added select points UI, moved rendering table out of if
+        keypointCanvas.render(keypoints);
+        history.addKeypoints(keypoints);
+    }
+
 });
