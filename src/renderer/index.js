@@ -1,9 +1,16 @@
 import { KeypointCanvas } from "./keypoint-canvas.js";
 import { KeypointTable } from "./keypoint-table.js";
 import { KeypointSynthesizer } from "./keypoint-synthesizer.js";
+import { Keypoints } from "./keypoints.js";
+import { RobotJoints } from "./robot-joints.js"
+import { RobotMessageFormatter } from "./robot-message-formatter.js";
 import { History } from "./keypoint-history.js";
-import { RobotpointSelector } from "./robotpoint-selector.js";
+import { MappingsView } from "./mappings-view.js";
 
+let RECIPIENT = {
+    ip: "127.0.0.1",
+    port: "7600"
+};
 
 const KEYPOINT_NAMES = [
     "nose",
@@ -43,62 +50,72 @@ const KEYPOINT_NAMES = [
     "pelvis"
 ];
 
-//plan from Sunday, March 16th 
-// let selectedKeypoints = []; // names or ids of selected keypoints
-// let selectedBody = []; // array of selected keypoints and their x, y values and drop selectedKeypoint if NaN 
-// let history = []; // array of selectedBody 
+let TEMPORARY_HOME_POSITIONS = [
+    [0.0, 0.2],
+    [0.0, 0.4],
+    [0.0, 0.6],
+    [0.4, 0.5],
+    [0.4, 0.5],
+    [0.2, 0.8],
+    [0.2, 0.8]
+];
 
+let TEMPORARY_FRAME_TO_ROBOT = {
+    scaleX: 6,
+    offsetX: -0.5,
+    scaleY: 10,
+    offset: -1.0
+};
+
+let mappingsView = new MappingsView(KEYPOINT_NAMES);
+mappingsView.render();
+
+let keypoints = new Keypoints(KEYPOINT_NAMES);
+let robotJoints = new RobotJoints(TEMPORARY_HOME_POSITIONS,
+    TEMPORARY_FRAME_TO_ROBOT, mappingsView.model);
+let robotOSCFormatter = new RobotMessageFormatter();
 let keypointCanvas = new KeypointCanvas(document.getElementById("poseCanvas"));
 let keypointTable = new KeypointTable(KEYPOINT_NAMES);
 let synthesizer = new KeypointSynthesizer();
 
 let history = new History();
-let robotpointSelector = new RobotpointSelector(KEYPOINT_NAMES);
 
-let isSelected = false;
 
-document.getElementById("selectedCheck").addEventListener("change", (event) => {
-    isSelected = event.target.checked;
-});
+function handlePoseMessage(poseMessage, mappingsView) {
+    // Update state.
+    keypoints.update(poseMessage);
+    synthesizer.synthesizeKeypoints(keypoints.model);
 
+    // Update the robot model according to the UI.
+    robotJoints.update(keypoints.model);
+
+    // Send joints to the robot.
+    let robotMessage = robotOSCFormatter.format(robotJoints.model);
+    osc.send(robotMessage, RECIPIENT.ip, RECIPIENT.port);
+
+    // Render the user interface.
+    keypointCanvas.render(robotJoints);
+    keypointTable.render(keypoints.model);
+
+    // // if we have checked the box to do the selected Robot points, render only those in canvas and history
+    // // otherwise render all keypoints
+    // if(isSelected){
+    //     // Get selected Robot points
+
+    //     history.addKeypoints(selectedRobotpoints);
+    // }
+    // else{
+    //     // TODO: Reduce cost of multiple loops by transforming
+    //     // and rendering each keypoint within a single loop.
+    //     // Edit: when added select points UI, moved rendering table out of if
+    //     history.addKeypoints(keypoints);
+    // }
+};
 
 osc.onBundle((event, bundle) => {
     // Only read the first pose.
     let poseMessage = bundle.packets[0];
-    let keypoints = [];
-
-    for (let i = 0; i < poseMessage.args.length; i++) {
-        let keypoint = poseMessage.args[i];
-
-        keypoints.push({
-            id: KEYPOINT_NAMES[i],
-            x: keypoint[0].value,
-            y: keypoint[1].value,
-            z: keypoint[2].value
-        });
+    if (poseMessage) {
+        handlePoseMessage(poseMessage, mappingsView);
     }
-
-    let synthesizedKeypoints = synthesizer.synthesizeKeypoints(keypoints);
-    keypoints.push(...synthesizedKeypoints);
-    
-    // always show all keypoints in table (state of the world)
-    keypointTable.render(keypoints);
-
-    // if we have checked the box to do the selected Robot points, render only those in canvas and history
-    // otherwise render all keypoints 
-    if(isSelected){
-        // Get selected Robot points
-        let selectedRobotpoints = robotpointSelector.getSelectedKeypoints(keypoints);
-
-        keypointCanvas.render(selectedRobotpoints);
-        history.addKeypoints(selectedRobotpoints);
-    }
-    else{
-        // TODO: Reduce cost of multiple loops by transforming
-        // and rendering each keypoint within a single loop.
-        // Edit: when added select points UI, moved rendering table out of if
-        keypointCanvas.render(keypoints);
-        history.addKeypoints(keypoints);
-    }
-
 });

@@ -1,16 +1,21 @@
+const NO_KEYPOINT = {
+    x: NaN,
+    y: NaN
+};
+
 export class KeypointTable {
     constructor(keypointNames) {
         this.xRow = document.getElementById("x");
         this.yRow = document.getElementById("y");
-        this.zRow = document.getElementById("z");
-        this.renderHeader(keypointNames);
+        this.keypointNames = keypointNames;
+        this.renderHeader();
     }
 
-    renderHeader(keypointNames) {
+    renderHeader() {
         let headerRow = document.querySelector("thead tr");
         let headerCellsString = "";
 
-        keypointNames.forEach((keypointName) => {
+        this.keypointNames.forEach((keypointName) => {
             headerCellsString += `<th>${keypointName}</th>`
         });
 
@@ -22,21 +27,22 @@ export class KeypointTable {
         return "<td>" + valueString + "</td>"
     }
 
-    render(keypoints) {
+    render(keypointsModel) {
         let xChildren = "";
         let yChildren = "";
-        let zChildren = "";
 
-        for (let i = 0; i < keypoints.length; i++) {
-            let keypoint = keypoints[i];
+        for (let i = 0; i < this.keypointNames.length; i++) {
+            let keypointName = this.keypointNames[i];
+            let keypoint = keypointsModel[keypointName];
+            if (!keypoint) {
+                keypoint = NO_KEYPOINT
+            }
 
             xChildren += this.cellForValue(keypoint.x);
             yChildren += this.cellForValue(keypoint.y);
-            zChildren += this.cellForValue(keypoint.z);
         }
 
         this.xRow.innerHTML = xChildren;
         this.xRow.innerHTML = yChildren;
-        this.zRow.innerHTML = zChildren;
     }
 }

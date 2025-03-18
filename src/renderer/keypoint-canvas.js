@@ -4,24 +4,22 @@ export class KeypointCanvas {
         this.ctx = container.getContext("2d");
     }
 
-    keypointLabel(keypoint) {
-        let xStr = keypoint.x.toFixed(3);
-        let yStr = keypoint.y.toFixed(3);
-        let id = keypoint.id;
+    jointLabel(keypointName, robotJoint) {
+        let xStr = robotJoint[0].toFixed(3);
+        let yStr = robotJoint[1].toFixed(3);
 
-        return `${id} (${xStr}, ${yStr})`
+        return `${keypointName} (${xStr}, ${yStr})`
     }
 
-    render(keypoints) {
+    render(robotJoints) {
         let width = this.container.width;
         let height = this.container.height;
-
         this.ctx.clearRect(0, 0, width, height);
 
-        for (let i = 0; i < keypoints.length; i++) {
-            let keypoint = keypoints[i];
-            const canvasX = keypoint.x * width;
-            const canvasY = keypoint.y * height;
+        for (let i = 0; i < robotJoints.model.length; i++) {
+            let robotJoint = robotJoints.model[i];
+            const canvasX = robotJoint[0] * width;
+            const canvasY = robotJoint[1] * height;
 
             // Draw keypoint circle
             this.ctx.beginPath();
@@ -30,12 +28,13 @@ export class KeypointCanvas {
             this.ctx.fill();
             this.ctx.closePath();
 
-            // Draw ID label next to the keypoint
             this.ctx.fillStyle = "gray";
             this.ctx.font = "14px Arial";
+
             // Offset text slightly
-            this.ctx.fillText(this.keypointLabel(keypoint),
-                canvasX + 8, canvasY - 8);
+            let keypointName = robotJoints.mappings[i];
+            let jointLabel = this.jointLabel(keypointName, robotJoint);
+            this.ctx.fillText(jointLabel, canvasX + 8, canvasY - 8);
         }
     }
 }
