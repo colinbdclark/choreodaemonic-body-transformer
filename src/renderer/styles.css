@@ -13,6 +13,12 @@ h1 {
     font-size: 3rem;
 }
 
+canvas {
+    border: 1px solid white;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
 table {
     font-family: monospace;
     font-size: 75%;
@@ -40,4 +46,24 @@ tr:nth-child(odd) {
 
 tr:nth-child(even) {
     background-color: gray;
+}
+
+
+.robotpoint-selectors {
+    margin: 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.selector {
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px;
+}
+
+.robotpoint-select {
+    padding: 5px;
+    margin-top: 5px;
+    min-width: 150px;
 }

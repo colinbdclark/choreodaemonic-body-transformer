@@ -20,6 +20,7 @@ const createWindow = () => {
     return win;
 }
 
+
 app.whenReady().then(() => {
     let mainWindow = createWindow();
 
