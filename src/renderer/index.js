@@ -5,12 +5,8 @@ import { Keypoints } from "./keypoints.js";
 import { RobotJoints } from "./robot-joints.js"
 import { RobotMessageFormatter } from "./robot-message-formatter.js";
 import { MappingsView } from "./mappings-view.js";
+import { TextField } from "./text-field.js";
 import { PlayButton } from "./play-button.js";
-
-let RECIPIENT = {
-    ip: "127.0.0.1",
-    port: "7600"
-};
 
 const KEYPOINT_NAMES = [
     "nose",
@@ -78,6 +74,8 @@ let keypointCanvas = new KeypointCanvas(
     document.getElementById("poseCanvas"), TEMPORARY_FRAME_TO_ROBOT);
 let keypointTable = new KeypointTable(KEYPOINT_NAMES);
 let synthesizer = new KeypointSynthesizer();
+let addressField = new TextField(document.getElementById("address"));
+let portField = new TextField(document.getElementById("port"));
 let playButton = new PlayButton(document.getElementById("playButton"), true);
 
 function handlePoseMessage(poseMessage, mappingsView) {
@@ -92,7 +90,7 @@ function handlePoseMessage(poseMessage, mappingsView) {
     let robotMessage = robotOSCFormatter.format(robotJoints.model);
 
     if (playButton.isPlaying){
-        osc.send(robotMessage, RECIPIENT.ip, RECIPIENT.port);
+        osc.send(robotMessage, addressField.value, Number(portField.value));
         keypointCanvas.render(robotJoints);
     }
 
