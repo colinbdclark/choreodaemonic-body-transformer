@@ -33,17 +33,15 @@ export class RobotJoints {
     update(keypointsModel) {
         for (let i = 0; i < this.mappings.length; i++) {
             let keypointName = this.mappings[i];
-            if (!keypointName) {
-                console.log("Ack! Invalid keypoint mapping!")
-            }
 
             let keypoint = keypointsModel[keypointName];
+            console.log("keypoint: ", keypoint.x, ", ", keypoint.y);
 
             if (keypoint) {
                 // Scale from frame coordinates to robot stage coordinates.
                 let robotX = (keypoint.x + this.scaling.offsetX) *
                     this.scaling.scaleX;
-                let robotY = (keypoint.y + this.scaling.offsetY) *
+                let robotY = (this.scaling.offsetY - keypoint.y) *
                     this.scaling.scaleY;
                 this.model[i] = [robotX, robotY];
             } else {

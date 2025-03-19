@@ -51,20 +51,20 @@ const KEYPOINT_NAMES = [
 ];
 
 let TEMPORARY_HOME_POSITIONS = [
-    [0.0, 0.2],
-    [0.0, 0.4],
-    [0.0, 0.6],
-    [0.4, 0.5],
-    [0.4, 0.5],
-    [0.2, 0.8],
-    [0.2, 0.8]
+    [0.0, 8.0],
+    [0.0, 6.0],
+    [0.0, 4.0],
+    [-2.0, 5.5],
+    [2.0, 5.5],
+    [-1.0, 2.0],
+    [1.0, 2.0]
 ];
 
 let TEMPORARY_FRAME_TO_ROBOT = {
     scaleX: 6,
     offsetX: -0.5,
     scaleY: 10,
-    offset: -1.0
+    offset: 1.0
 };
 
 let mappingsView = new MappingsView(KEYPOINT_NAMES);
@@ -74,12 +74,17 @@ let keypoints = new Keypoints(KEYPOINT_NAMES);
 let robotJoints = new RobotJoints(TEMPORARY_HOME_POSITIONS,
     TEMPORARY_FRAME_TO_ROBOT, mappingsView.model);
 let robotOSCFormatter = new RobotMessageFormatter();
-let keypointCanvas = new KeypointCanvas(document.getElementById("poseCanvas"));
+let keypointCanvas = new KeypointCanvas(document.getElementById("poseCanvas"), TEMPORARY_FRAME_TO_ROBOT);
 let keypointTable = new KeypointTable(KEYPOINT_NAMES);
 let synthesizer = new KeypointSynthesizer();
 
-let history = new History();
+// history isn't currently being used as we just send the robot points back to their home positions
+// let history = new History();
 
+let isPaused = document.getElementById("pause");
+document.getElementById("pause").addEventListener('change', function(e) {
+    isPaused = e.target.checked;
+});
 
 function handlePoseMessage(poseMessage, mappingsView) {
     // Update state.
@@ -89,27 +94,16 @@ function handlePoseMessage(poseMessage, mappingsView) {
     // Update the robot model according to the UI.
     robotJoints.update(keypoints.model);
 
-    // Send joints to the robot.
+    // Send joints to the robot if not paused.
     let robotMessage = robotOSCFormatter.format(robotJoints.model);
-    osc.send(robotMessage, RECIPIENT.ip, RECIPIENT.port);
+    if(!isPaused){
+       // osc.send(robotMessage, RECIPIENT.ip, RECIPIENT.port);
+    }
 
     // Render the user interface.
     keypointCanvas.render(robotJoints);
     keypointTable.render(keypoints.model);
 
-    // // if we have checked the box to do the selected Robot points, render only those in canvas and history
-    // // otherwise render all keypoints
-    // if(isSelected){
-    //     // Get selected Robot points
-
-    //     history.addKeypoints(selectedRobotpoints);
-    // }
-    // else{
-    //     // TODO: Reduce cost of multiple loops by transforming
-    //     // and rendering each keypoint within a single loop.
-    //     // Edit: when added select points UI, moved rendering table out of if
-    //     history.addKeypoints(keypoints);
-    // }
 };
 
 osc.onBundle((event, bundle) => {

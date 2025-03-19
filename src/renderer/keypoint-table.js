@@ -43,6 +43,6 @@ export class KeypointTable {
         }
 
         this.xRow.innerHTML = xChildren;
-        this.xRow.innerHTML = yChildren;
+        this.yRow.innerHTML = yChildren;
     }
 }

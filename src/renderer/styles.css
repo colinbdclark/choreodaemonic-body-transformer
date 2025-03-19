@@ -13,6 +13,12 @@ h1 {
     font-size: 3rem;
 }
 
+canvas {
+    border: 1px solid white;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
 table {
     font-family: monospace;
     font-size: 75%;
