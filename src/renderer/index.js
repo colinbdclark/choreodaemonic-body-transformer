@@ -4,8 +4,8 @@ import { KeypointSynthesizer } from "./keypoint-synthesizer.js";
 import { Keypoints } from "./keypoints.js";
 import { RobotJoints } from "./robot-joints.js"
 import { RobotMessageFormatter } from "./robot-message-formatter.js";
-import { History } from "./keypoint-history.js";
 import { MappingsView } from "./mappings-view.js";
+import { PlayButton } from "./play-button.js";
 
 let RECIPIENT = {
     ip: "127.0.0.1",
@@ -74,20 +74,14 @@ let keypoints = new Keypoints(KEYPOINT_NAMES);
 let robotJoints = new RobotJoints(TEMPORARY_HOME_POSITIONS,
     TEMPORARY_FRAME_TO_ROBOT, mappingsView.model);
 let robotOSCFormatter = new RobotMessageFormatter();
-let keypointCanvas = new KeypointCanvas(document.getElementById("poseCanvas"), TEMPORARY_FRAME_TO_ROBOT);
+let keypointCanvas = new KeypointCanvas(
+    document.getElementById("poseCanvas"), TEMPORARY_FRAME_TO_ROBOT);
 let keypointTable = new KeypointTable(KEYPOINT_NAMES);
 let synthesizer = new KeypointSynthesizer();
-
-// history isn't currently being used as we just send the robot points back to their home positions
-// let history = new History();
-
-let isPaused = false;
-document.getElementById("pause").addEventListener("change", (event) => {
-    isPaused = event.target.checked;
-});
+let playButton = new PlayButton(document.getElementById("playButton"), true);
 
 function handlePoseMessage(poseMessage, mappingsView) {
-    // Update state.
+    // Update keypoint and generate synthetic keypoints.
     keypoints.update(poseMessage);
     synthesizer.synthesizeKeypoints(keypoints.model);
 
@@ -96,15 +90,13 @@ function handlePoseMessage(poseMessage, mappingsView) {
 
     // Send joints to the robot and UI canvas if not paused.
     let robotMessage = robotOSCFormatter.format(robotJoints.model);
-    if(isPaused == false){
-       osc.send(robotMessage, RECIPIENT.ip, RECIPIENT.port);
 
-        // Render the user interface.
+    if (playButton.isPlaying){
+        osc.send(robotMessage, RECIPIENT.ip, RECIPIENT.port);
         keypointCanvas.render(robotJoints);
     }
 
     keypointTable.render(keypoints.model);
-
 };
 
 osc.onBundle((event, bundle) => {
