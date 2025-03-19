@@ -29,7 +29,7 @@ export class Keypoints {
         for (let i = 0; i < poseMessage.args.length; i++) {
             let keypointCoordinates = poseMessage.args[i];
             let keypointName = this.keypointNames[i];
-            let x = keypointCoordinates[0].value;
+            let x = 1.0 - keypointCoordinates[0].value;
             let y = keypointCoordinates[1].value;
             let keypoint = {
                 x: x,

@@ -81,9 +81,9 @@ let synthesizer = new KeypointSynthesizer();
 // history isn't currently being used as we just send the robot points back to their home positions
 // let history = new History();
 
-let isPaused = document.getElementById("pause");
-document.getElementById("pause").addEventListener('change', function(e) {
-    isPaused = e.target.checked;
+let isPaused = false;
+document.getElementById("pause").addEventListener("change", (event) => {
+    isPaused = event.target.checked;
 });
 
 function handlePoseMessage(poseMessage, mappingsView) {
@@ -94,14 +94,15 @@ function handlePoseMessage(poseMessage, mappingsView) {
     // Update the robot model according to the UI.
     robotJoints.update(keypoints.model);
 
-    // Send joints to the robot if not paused.
+    // Send joints to the robot and UI canvas if not paused.
     let robotMessage = robotOSCFormatter.format(robotJoints.model);
-    if(!isPaused){
-       // osc.send(robotMessage, RECIPIENT.ip, RECIPIENT.port);
+    if(isPaused == false){
+       osc.send(robotMessage, RECIPIENT.ip, RECIPIENT.port);
+
+        // Render the user interface.
+        keypointCanvas.render(robotJoints);
     }
 
-    // Render the user interface.
-    keypointCanvas.render(robotJoints);
     keypointTable.render(keypoints.model);
 
 };

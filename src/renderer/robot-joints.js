@@ -43,7 +43,6 @@ export class RobotJoints {
                 let robotY = (this.scaling.offsetY - keypoint.y) *
                     this.scaling.scaleY;
                 this.model[i] = [robotX, robotY];
-                console.log("here !!!!", this.model[i]);
             } else {
                 let homePosition = this.homePositions[i];
                 this.model[i] = [homePosition[0], homePosition[1]];
