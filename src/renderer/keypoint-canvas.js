@@ -70,8 +70,8 @@ export class KeypointCanvas {
 
 
             let test = robotJoints.model[0]; 
-            console.log("joint:", test, " Rx: ", test[0], " Ry: ", test[1]);
-            console.log("x: ", ((test[0] + this.scaling.scaleX/2) / this.scaling.scaleX ) * width, " y: ", (1 - (test[1] / this.scaling.scaleY)) * height);
+            // console.log("joint:", test, " Rx: ", test[0], " Ry: ", test[1]);
+            // console.log("x: ", ((test[0] + this.scaling.scaleX/2) / this.scaling.scaleX ) * width, " y: ", (1 - (test[1] / this.scaling.scaleY)) * height);
 
 
             // Draw keypoint circle

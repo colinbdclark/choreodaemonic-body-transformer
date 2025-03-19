@@ -64,7 +64,7 @@ let TEMPORARY_FRAME_TO_ROBOT = {
     scaleX: 6,
     offsetX: -0.5,
     scaleY: 10,
-    offset: 1.0
+    offsetY: 1.0
 };
 
 let mappingsView = new MappingsView(KEYPOINT_NAMES);
