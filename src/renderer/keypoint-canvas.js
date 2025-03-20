@@ -5,22 +5,14 @@ export class KeypointCanvas {
         this.scaling = scaling;
     }
 
-    jointLabel(keypointName, robotJoint) {
-        let xStr = robotJoint[0].toFixed(3);
-        let yStr = robotJoint[1].toFixed(3);
-
-        return `${keypointName} (${xStr}, ${yStr})`
-    }
-
     makeGraph() {
-
         let width = this.container.width;
         let height = this.container.height;
 
         // Draw grid lines
         this.ctx.strokeStyle = '#e9e9e9';
         this.ctx.lineWidth = 0.5;
-        
+
 
         // Vertical lines for every meter
         let meterSpacingX = width / this.scaling.scaleX;
@@ -54,7 +46,6 @@ export class KeypointCanvas {
             let meters = ((height - y) / height * this.scaling.scaleY).toFixed(1);
             this.ctx.fillText(meters + 'm', 10, y + 5);
         }
-
     }
 
     render(robotJoints) {
@@ -68,12 +59,6 @@ export class KeypointCanvas {
             const canvasX = ((robotJoint[0] + this.scaling.scaleX/2) / this.scaling.scaleX ) * width;
             const canvasY = (1 - (robotJoint[1] / this.scaling.scaleY)) * height;
 
-
-            let test = robotJoints.model[0]; 
-            // console.log("joint:", test, " Rx: ", test[0], " Ry: ", test[1]);
-            // console.log("x: ", ((test[0] + this.scaling.scaleX/2) / this.scaling.scaleX ) * width, " y: ", (1 - (test[1] / this.scaling.scaleY)) * height);
-
-
             // Draw keypoint circle
             this.ctx.beginPath();
             this.ctx.arc(canvasX, canvasY, 5, 0, Math.PI * 2);
@@ -81,13 +66,14 @@ export class KeypointCanvas {
             this.ctx.fill();
             this.ctx.closePath();
 
-            this.ctx.fillStyle = "gray";
+            // Draw label.
+            this.ctx.fillStyle = "#aaa";
             this.ctx.font = "14px Arial";
-
-            // Offset text slightly
+            this.ctx.textAlign = "center";
             let keypointName = robotJoints.mappings[i];
-            let jointLabel = this.jointLabel(keypointName, robotJoint);
-            this.ctx.fillText(jointLabel, canvasX + 8, canvasY - 8);
+            let isOdd = i % 2 === 1;
+            let labelOffset = isOdd ? -10 : 20;
+            this.ctx.fillText(keypointName, canvasX, canvasY + labelOffset);
         }
     }
 }

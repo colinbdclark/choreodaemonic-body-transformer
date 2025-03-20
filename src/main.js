@@ -1,8 +1,10 @@
 const {app, BrowserWindow, ipcMain} = require("electron");
 const path = require("node:path");
 const UDPManager = require("./main/udp-manager.js");
+const AndreOSC = require("./main/andre-osc.js");
 
 let udp = new UDPManager();
+let andre = new AndreOSC();
 
 const createWindow = () => {
     let win = new BrowserWindow({
@@ -20,7 +22,6 @@ const createWindow = () => {
     return win;
 }
 
-
 app.whenReady().then(() => {
     let mainWindow = createWindow();
 
@@ -32,6 +33,8 @@ app.whenReady().then(() => {
 
     ipcMain.handle("send", async (event, message, ip, port) => {
         udp.sender.send(message, ip, port);
+
+        andre.send(message);
     });
 
     udp.listener.on("bundle", (message) => {

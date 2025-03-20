@@ -57,7 +57,7 @@ let TEMPORARY_HOME_POSITIONS = [
 ];
 
 let TEMPORARY_FRAME_TO_ROBOT = {
-    scaleX: 3,
+    scaleX: 6,
     offsetX: -0.5,
     scaleY: 3,
     offsetY: 1.0
