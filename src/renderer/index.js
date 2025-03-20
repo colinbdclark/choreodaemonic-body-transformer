@@ -78,9 +78,9 @@ let addressField = new TextField(document.getElementById("address"));
 let portField = new TextField(document.getElementById("port"));
 let playButton = new PlayButton(document.getElementById("playButton"), true);
 
-function handlePoseMessage(poseMessage, mappingsView) {
+function handlePoseMessage(xMessage, yMessage, mappingsView) {
     // Update keypoint and generate synthetic keypoints.
-    keypoints.update(poseMessage);
+    keypoints.update(xMessage, yMessage);
     synthesizer.synthesizeKeypoints(keypoints.model);
 
     // Update the robot model according to the UI.
@@ -98,9 +98,12 @@ function handlePoseMessage(poseMessage, mappingsView) {
 };
 
 osc.onBundle((event, bundle) => {
-    // Only read the first pose.
-    let poseMessage = bundle.packets[0];
-    if (poseMessage) {
-        handlePoseMessage(poseMessage, mappingsView);
+    // Only read x and y from the first pose, if there is one.
+    if (bundle.packets.length < 2) {
+        return;
     }
+
+    let xMessage = bundle.packets[0];
+    let yMessage = bundle.packets[1];
+    handlePoseMessage(xMessage, yMessage, mappingsView);
 });

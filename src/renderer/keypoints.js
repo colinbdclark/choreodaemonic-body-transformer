@@ -25,21 +25,16 @@ export class Keypoints {
         return true;
     }
 
-    update(poseMessage) {
-        for (let i = 0; i < poseMessage.args.length; i++) {
-            let keypointCoordinates = poseMessage.args[i];
+    update(xMessage, yMessage) {
+        // Read MovementOSC's “Bundled Message Per Axis” format
+        for (let i = 0; i < xMessage.args.length; i++) {
+            let messageX = xMessage.args[i].value;
+            let messageY = yMessage.args[i].value;
             let keypointName = this.keypointNames[i];
-            let x = 1.0 - keypointCoordinates[0].value;
-            let y = keypointCoordinates[1].value;
-            let keypoint = {
-                x: 1 - x,
-                y: y
-            };
-
-            if (this.isValidKeypoint(x, y)) {
+            if (this.isValidKeypoint(messageX, messageY)) {
                 this.model[keypointName] = {
-                    x: x,
-                    y: y
+                    x: 1 - messageX,
+                    y: messageY
                 }
             }
         }
