@@ -21,7 +21,6 @@ export class KeypointCanvas {
         this.ctx.strokeStyle = '#e9e9e9';
         this.ctx.lineWidth = 0.5;
 
-
         // Vertical lines for every meter
         let meterSpacingX = width / this.scaling.scaleX;
         for (let x = 0; x <= width; x += meterSpacingX) {
@@ -39,6 +38,7 @@ export class KeypointCanvas {
             this.ctx.lineTo(width, y);
             this.ctx.stroke();
         }
+
         // Draw origin labels
         this.ctx.fillStyle = 'gray';
         this.ctx.font = '10px monospace';
@@ -68,11 +68,7 @@ export class KeypointCanvas {
             const canvasX = ((robotJoint[0] + this.scaling.scaleX/2) / this.scaling.scaleX ) * width;
             const canvasY = (1 - (robotJoint[1] / this.scaling.scaleY)) * height;
 
-
             let test = robotJoints.model[0];
-            // console.log("joint:", test, " Rx: ", test[0], " Ry: ", test[1]);
-            // console.log("x: ", ((test[0] + this.scaling.scaleX/2) / this.scaling.scaleX ) * width, " y: ", (1 - (test[1] / this.scaling.scaleY)) * height);
-
 
             // Draw keypoint circle
             this.ctx.beginPath();

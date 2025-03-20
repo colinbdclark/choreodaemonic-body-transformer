@@ -26,16 +26,16 @@ export class Keypoints {
     }
 
     update(poseMessage) {
-        // read new "Bundled Message Per Axis" format 
+        // read new "Bundled Message Per Axis" format
         if(poseMessage[0] && poseMessage[1]){
             let xValues = poseMessage[0].args.map(x => x.value);
             let yValues = poseMessage[1].args.map(y => y.value);
-        
+
             for (let i = 0; i < this.keypointNames.length; i++) {
                 let keypointName = this.keypointNames[i];
-                let x = 1.0 - xValues[i]; // Flip x coordinate 
+                let x = 1.0 - xValues[i]; // Flip x coordinate
                 let y = yValues[i];
-        
+
                 if (this.isValidKeypoint(x, y)) {
                     this.model[keypointName] = {
                         x: x,
