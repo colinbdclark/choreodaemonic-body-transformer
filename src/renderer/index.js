@@ -92,7 +92,6 @@ function handlePoseMessage(poseMessage, mappingsView) {
     if (playButton.isPlaying){
         osc.send(robotMessage, addressField.value, Number(portField.value));
         keypointCanvas.render(robotJoints);
-        console.log(robotMessage);
     }
 
     keypointTable.render(keypoints.model);
