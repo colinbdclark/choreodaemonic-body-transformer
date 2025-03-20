@@ -4,7 +4,7 @@ export class RobotMessageFormatter {
     format(robotModel) {
         let args = [];
         for (let i = 0; i < robotModel.length; i++) {
-            args[i] = [
+            args.push(
                 {
                     type: "f",
                     value: robotModel[i][0]
@@ -13,7 +13,7 @@ export class RobotMessageFormatter {
                     type: "f",
                     value: robotModel[i][1]
                 }
-            ]
+            );
         }
 
         return {
