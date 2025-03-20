@@ -3,17 +3,18 @@ export class RobotMessageFormatter {
 
     format(robotModel) {
         let args = [];
+
         for (let i = 0; i < robotModel.length; i++) {
-            args[i] = [
-                {
-                    type: "f",
-                    value: robotModel[i][0]
-                },
-                {
-                    type: "f",
-                    value: robotModel[i][1]
-                }
-            ]
+            // Flatten x/y pairs into a single array of args.
+            args.push({
+                type: "f",
+                value: robotModel[i][0]
+            });
+
+            args.push({
+                type: "f",
+                value: robotModel[i][1]
+            });
         }
 
         return {
