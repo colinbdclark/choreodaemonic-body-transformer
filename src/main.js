@@ -1,10 +1,23 @@
 const {app, BrowserWindow, ipcMain} = require("electron");
 const path = require("node:path");
 const UDPManager = require("./main/udp-manager.js");
-const AndreOSC = require("./main/andre-osc.js");
+const OSCFriends = require("./main/osc-friends.js");
+
+let RECIPIENTS = [
+    {
+        // Andre
+        address: "192.168.0.198",
+        port: 7400
+    },
+    {
+        // Carlos
+        address: "192.168.0.165",
+        port: 1235
+    }
+];
 
 let udp = new UDPManager();
-let andre = new AndreOSC();
+let friends = new OSCFriends(RECIPIENTS);
 
 const createWindow = () => {
     let win = new BrowserWindow({
@@ -34,7 +47,7 @@ app.whenReady().then(() => {
     ipcMain.handle("send", async (event, message, ip, port) => {
         udp.sender.send(message, ip, port);
 
-        andre.send(message);
+        friends.send(message);
     });
 
     udp.listener.on("bundle", (message) => {

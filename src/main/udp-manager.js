@@ -28,7 +28,7 @@ class UDPManager {
         });
 
         sender.on("error", (e) => {
-            console.log("Error sending OSC message. " + e);
+            console.log("Error sending OSC message to Tighe. " + e);
         });
 
         sender.open();

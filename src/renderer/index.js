@@ -46,20 +46,20 @@ const KEYPOINT_NAMES = [
     "pelvis"
 ];
 
-let TEMPORARY_HOME_POSITIONS = [
-    [0.0, 8.0],
-    [0.0, 6.0],
-    [0.0, 4.0],
-    [-2.0, 5.5],
-    [2.0, 5.5],
-    [-1.0, 2.0],
-    [1.0, 2.0]
+let HOME_POSITIONS = [
+    [-1.37, 0.0],
+    [-0.65, 0.0],
+    [-0.65, 0.0],
+    [0.0, 0.0],
+    [0.65, 0.0],
+    [0.65, 0.0],
+    [1.37, 0.0]
 ];
 
-let TEMPORARY_FRAME_TO_ROBOT = {
-    scaleX: 6,
+let FRAME_TO_ROBOT = {
+    scaleX: 2,
     offsetX: -0.5,
-    scaleY: 3,
+    scaleY: 2.0,
     offsetY: 1.0
 };
 
@@ -67,11 +67,11 @@ let mappingsView = new MappingsView(KEYPOINT_NAMES);
 mappingsView.render();
 
 let keypoints = new Keypoints(KEYPOINT_NAMES);
-let robotJoints = new RobotJoints(TEMPORARY_HOME_POSITIONS,
-    TEMPORARY_FRAME_TO_ROBOT, mappingsView.model);
+let robotJoints = new RobotJoints(HOME_POSITIONS,
+    FRAME_TO_ROBOT, mappingsView.model);
 let robotOSCFormatter = new RobotMessageFormatter();
 let keypointCanvas = new KeypointCanvas(
-    document.getElementById("poseCanvas"), TEMPORARY_FRAME_TO_ROBOT);
+    document.getElementById("poseCanvas"), FRAME_TO_ROBOT);
 let keypointTable = new KeypointTable(KEYPOINT_NAMES);
 let synthesizer = new KeypointSynthesizer();
 let addressField = new TextField(document.getElementById("address"));
