@@ -77,8 +77,8 @@ const JOINT_LIMITS = [
 ];
 
 let STICK_LENGTHS_METERS = [
-    1.3,
-    1.3
+    1.4,
+    1.2
 ];
 
 // Map two body parts to two robot joints
