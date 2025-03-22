@@ -220,15 +220,25 @@ export class RobotJoints {
 
             let stickLength = STICK_LENGTHS_METERS[stickIdx];
             let magnitude = this.magnitude(joint1, joint2);
-            if (magnitude > stickLength) {
-                let transformedStick = this.pointsToStickTransform(joint1, joint2,
-                    stickLength);
-                this.model[joint1Index] = transformedStick[0];
-                this.model[joint2Index] = transformedStick[1];
-            } else {
-                this.handleFreeJoint(keypoint1, joint1Index);
-                this.handleFreeJoint(keypoint2, joint2Index);
-            }
+
+            // Always constrain stick points to the length of the object
+            // that is attaching them.
+            let transformedStick = this.pointsToStickTransform(joint1, joint2,
+                stickLength);
+            this.model[joint1Index] = transformedStick[0];
+            this.model[joint2Index] = transformedStick[1];
+
+            // Only constrain the two points if the distance between points
+            // is further away than the length of what's attaching them.
+            // if (magnitude > stickLength) {
+            //     let transformedStick = this.pointsToStickTransform(joint1, joint2,
+            //         stickLength);
+            //     this.model[joint1Index] = transformedStick[0];
+            //     this.model[joint2Index] = transformedStick[1];
+            // } else {
+            //     this.handleFreeJoint(keypoint1, joint1Index);
+            //     this.handleFreeJoint(keypoint2, joint2Index);
+            // }
         }
 
         this.filterModel();
