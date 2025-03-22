@@ -1,7 +1,7 @@
 import { LPF } from './lpf.js';
 
-const FRAME_RATE = 50;
-const LAG_TIME = 1.0;
+const FRAME_RATE = 35;
+const LAG_TIME = 5.0;
 
 const JOINT_LIMITS = [
     {
@@ -78,7 +78,7 @@ const JOINT_LIMITS = [
 
 let STICK_LENGTHS_METERS = [
     1.4,
-    1.2
+    1.1
 ];
 
 // Map two body parts to two robot joints
